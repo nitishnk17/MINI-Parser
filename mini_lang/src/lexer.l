@@ -3,49 +3,43 @@
 %{
 #include<cstdio>
 #include<cstdlib>
+#include "parser.tab.h"
 %}
 
-%%  
+%% // starting rules
 [ \t\n]+    ;
 
-"var"           {printf("TOKEN: VAR\n");}
-"if"            {printf("TOKEN: IF\n");}
-"else"          {printf("TOKEN: ELSE\n");}
-"while"         {printf("TOKEN: WHILE\n");}
+"var"           { return VAR; }
+"if"            { return IF; }
+"else"          { return ELSE; }
+"while"         { return WHILE; }
 
-[0-9]+          {printf("INTEGER(%s)\n",yytext);}
 
-[a-zA-Z][a-zA-Z0-9]*    {printf("IDENTIFIER(%s)\n",yytext);}
+[0-9]+          { return INTEGER; }
 
-"=="            {printf("EQ\n");}
-"!="            {printf("NEQ\n");}
-"<="            {printf("LE\n");}
-">="            {printf("GE\n");}
-"<"             {printf("LT\n");}
-">"             {printf("GT\n");}
+[a-zA-Z][a-zA-Z0-9]*    { return IDENTIFIER; }
 
-"+"             {printf("PLUS\n");}
-"-"             {printf("MINUS\n");}
-"*"             {printf("MUL\n");}
-"/"             {printf("DIV\n");}
+"=="            { return EQ; }
+"!="            { return NEQ; }
+"<="            { return LE; }
+">="            { return GE; }
+"<"             { return LT; }
+">"             { return GT; }
 
-"="             {printf("ASSIGN\n");}
-";"             {printf("SEMICOLON\n");}
-"("             {printf("LPAREN\n");}
-")"             {printf("RPAREN\n");}
-"{"             {printf("LBRACE\n");}
-"}"             {printf("RBRACE\n");}
+"+"             { return PLUS; }
+"-"             { return MINUS; }
+"*"             { return MUL; }
+"/"             { return DIV; }
 
+"="             { return ASSIGN; }
+";"             { return SEMICOLON; }
+"("             { return LPAREN; }
+")"             { return RPAREN; }
+"{"             { return LBRACE; }
+"}"             { return RBRACE; }
 
 "//".*          ;
 
-.               {printf("UNKNOWN(%s)\n",yytext);}
+.               { printf("Unknown token: %s\n", yytext); }
 
-
-%%  
-
-
-int main() {
-    yylex();
-    return 0;
-}
+%%    // ending rule
