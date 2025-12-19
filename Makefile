@@ -1,6 +1,6 @@
 # Compiler settings
 CC = gcc
-CFLAGS = -Wall -I.
+CFLAGS = -Wall -I. -Isrc
 
 # Target executable name
 TARGET = parser
@@ -9,6 +9,8 @@ TARGET = parser
 SRC_DIR = src
 LEX_SRC = $(SRC_DIR)/lexer.l
 YACC_SRC = $(SRC_DIR)/parser.y
+# We added ast.c here so it gets compiled
+AST_SRC = $(SRC_DIR)/ast.c 
 MAIN_SRC = $(SRC_DIR)/main.c
 
 # Generated files
@@ -20,15 +22,15 @@ YACC_HEADER = y.tab.h
 all: $(TARGET)
 
 # Link everything together
-$(TARGET): $(LEX_OUT) $(YACC_OUT) $(MAIN_SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(YACC_OUT) $(LEX_OUT) $(MAIN_SRC)
+# We added AST_SRC to the dependency list and the compile command
+$(TARGET): $(LEX_OUT) $(YACC_OUT) $(MAIN_SRC) $(AST_SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(YACC_OUT) $(LEX_OUT) $(MAIN_SRC) $(AST_SRC)
 
 # Generate Lexer C code
 $(LEX_OUT): $(LEX_SRC) $(YACC_HEADER)
 	flex $(LEX_SRC)
 
-# Generate Parser C code and Header (y.tab.h)
-# -d generates the header file, -y enables yacc compatibility (y.tab.c naming)
+# Generate Parser C code and Header
 $(YACC_OUT) $(YACC_HEADER): $(YACC_SRC)
 	bison -dy $(YACC_SRC)
 
