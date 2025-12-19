@@ -43,24 +43,24 @@
      IF = 259,
      ELSE = 260,
      WHILE = 261,
-     IDENTIFIER = 262,
-     INTEGER = 263,
-     PLUS = 264,
-     MINUS = 265,
-     MUL = 266,
-     DIV = 267,
-     ASSIGN = 268,
-     SEMICOLON = 269,
-     LPAREN = 270,
-     RPAREN = 271,
-     LBRACE = 272,
-     RBRACE = 273,
-     EQ = 274,
-     NEQ = 275,
-     LT = 276,
-     GT = 277,
-     LE = 278,
-     GE = 279
+     PLUS = 262,
+     MINUS = 263,
+     MUL = 264,
+     DIV = 265,
+     ASSIGN = 266,
+     SEMICOLON = 267,
+     LPAREN = 268,
+     RPAREN = 269,
+     LBRACE = 270,
+     RBRACE = 271,
+     EQ = 272,
+     NEQ = 273,
+     LT = 274,
+     GT = 275,
+     LE = 276,
+     GE = 277,
+     INTEGER = 278,
+     IDENTIFIER = 279
    };
 #endif
 /* Tokens.  */
@@ -68,30 +68,40 @@
 #define IF 259
 #define ELSE 260
 #define WHILE 261
-#define IDENTIFIER 262
-#define INTEGER 263
-#define PLUS 264
-#define MINUS 265
-#define MUL 266
-#define DIV 267
-#define ASSIGN 268
-#define SEMICOLON 269
-#define LPAREN 270
-#define RPAREN 271
-#define LBRACE 272
-#define RBRACE 273
-#define EQ 274
-#define NEQ 275
-#define LT 276
-#define GT 277
-#define LE 278
-#define GE 279
+#define PLUS 262
+#define MINUS 263
+#define MUL 264
+#define DIV 265
+#define ASSIGN 266
+#define SEMICOLON 267
+#define LPAREN 268
+#define RPAREN 269
+#define LBRACE 270
+#define RBRACE 271
+#define EQ 272
+#define NEQ 273
+#define LT 274
+#define GT 275
+#define LE 276
+#define GE 277
+#define INTEGER 278
+#define IDENTIFIER 279
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+#line 19 "src/parser.y"
+{
+    int ival;
+    char* sval;
+    struct Expr* expr;
+    struct Stmt* stmt;
+}
+/* Line 1529 of yacc.c.  */
+#line 104 "parser.tab.h"
+	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1

@@ -3,10 +3,13 @@
 %{
 #include<cstdio>
 #include<cstdlib>
+#include<cstring>
+#include "src/ast.hpp"
 #include "parser.tab.h"
 %}
 
 %% // starting rules
+
 [ \t\n]+    ;
 
 "var"           { return VAR; }
@@ -15,9 +18,12 @@
 "while"         { return WHILE; }
 
 
-[0-9]+          { return INTEGER; }
+[0-9]+          { yylval.ival = atoi(yytext); return INTEGER; }
 
-[a-zA-Z][a-zA-Z0-9]*    { return IDENTIFIER; }
+[a-zA-Z][a-zA-Z0-9]*    { 
+                            yylval.sval = strdup(yytext);
+                            return IDENTIFIER;
+                    }
 
 "=="            { return EQ; }
 "!="            { return NEQ; }
