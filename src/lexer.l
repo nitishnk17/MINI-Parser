@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h" /* Tokens are defined in parser.y */
+#include <string.h>
 %}
 
 %option noyywrap
@@ -11,23 +12,40 @@
 
 %%
 
-    /* 1. Integers */
 [0-9]+      { yylval.ival = atoi(yytext); return INTEGER; }
 
-    /* 2. Arithmetic Operators */
 "+"         { return '+'; }
 "-"         { return '-'; }
 "*"         { return '*'; }
 "/"         { return '/'; }
-
-    /* 3. Parentheses */
+"="         { return '='; }
 "("         { return '('; }
 ")"         { return ')'; }
+"{"         { return '{'; }
+"}"         { return '}'; }
 
-    /* 4. Ignore Whitespace (spaces, tabs, newlines) */
-[ \t\n]     { /* Do nothing */ }
+";"         { return ';'; }
 
-    /* 5. Catch-all for errors (Temporary: stops on unknown chars) */
-.           { fprintf(stderr, "Lexer Error: Unknown character '%s' at line %d\n", yytext, yylineno); exit(1); }
+"=="                { return EQ; }
+"!="                { return NE; }
+"<="                { return LE; }
+">="                { return GE; }
+"<"                 { return '<'; }
+">"                 { return '>'; }
+
+"var"               { return VAR; }   
+"if"                { return IF; }    
+"else"              { return ELSE; }  
+"while"             { return WHILE; } 
+
+    /*  Ignore Whitespace (spaces, tabs, newlines) */
+[ \t\n\r]   { /* Do nothing */ }
+
+    /* Variable name matching */
+[a-zA-Z][a-zA-Z0-9]* { yylval.stri = strdup(yytext); return IDENTIFIER; } 
+
+    /* Catch-all for errors */
+.                   { fprintf(stderr, "Unknown character %c\n", *yytext); }
 
 %%
+
