@@ -6,6 +6,12 @@
     #include<cstdio>
     #include<cstdlib>
     #include "src/ast.hpp"
+    #include <vector>
+
+    std::vector<Stmt*> programStatements;
+    void execStmt(Stmt* stmt);
+    void printSymbolTable();
+
 
     int yylex();
     void yyerror(const char *s);
@@ -48,19 +54,27 @@ statement_list:
     ;
 
 statement:
-    variable_decl
-    | assignment 
+    variable_decl{
+            programStatements.push_back($1);
+            $$ =$1;
+        }
+    | assignment {
+            programStatements.push_back($1);
+            $$=$1;
+        }    
     ;
 
 variable_decl:
     VAR IDENTIFIER SEMICOLON {
         $$ = new VarDeclStmt($2);
+        free($2);
     }
     ;
 
 assignment:
     IDENTIFIER ASSIGN expression SEMICOLON {
         $$ = new AssignStmt($1, $3);
+        free($1);
     }
     ;
 
@@ -95,6 +109,7 @@ factor:
         }
     |   IDENTIFIER {
             $$ = new VarExpr($1);
+            free($1);
         }
     |   LPAREN expression RPAREN {
             $$ = $2;
@@ -113,6 +128,20 @@ int main(){
     printf("Parsing started.......\n");
     yyparse();
     printf("Parsing finished.\n");
+
+    //Execute program
+    for(Stmt* s:programStatements){
+        execStmt(s);
+    }
+
+    printSymbolTable();
+
+    // Cleanup: delete all AST nodes
+    for(Stmt* s:programStatements){
+        delete s;
+    }
+    programStatements.clear();
+
     return 0;
 }
 

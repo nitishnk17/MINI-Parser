@@ -118,11 +118,17 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 6 "src/parser.y"
+#line 5 "src/parser.y"
 
     #include<cstdio>
     #include<cstdlib>
     #include "src/ast.hpp"
+    #include <vector>
+
+    std::vector<Stmt*> programStatements;
+    void execStmt(Stmt* stmt);
+    void printSymbolTable();
+
 
     int yylex();
     void yyerror(const char *s);
@@ -152,7 +158,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 19 "src/parser.y"
+#line 24 "src/parser.y"
 {
     int ival;
     char* sval;
@@ -160,7 +166,7 @@ typedef union YYSTYPE
     struct Stmt* stmt;
 }
 /* Line 193 of yacc.c.  */
-#line 164 "parser.tab.c"
+#line 170 "parser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -173,7 +179,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 177 "parser.tab.c"
+#line 183 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -461,8 +467,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    43,    43,    47,    48,    52,    53,    57,    63,    69,
-      72,    75,    81,    84,    87,    94,    97,   100
+       0,    48,    48,    52,    53,    57,    61,    68,    75,    82,
+      85,    88,    94,    97,   100,   107,   110,   114
 };
 #endif
 
@@ -1375,78 +1381,97 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 7:
+        case 5:
 #line 57 "src/parser.y"
     {
+            programStatements.push_back((yyvsp[(1) - (1)].stmt));
+            (yyval.stmt) =(yyvsp[(1) - (1)].stmt);
+        ;}
+    break;
+
+  case 6:
+#line 61 "src/parser.y"
+    {
+            programStatements.push_back((yyvsp[(1) - (1)].stmt));
+            (yyval.stmt)=(yyvsp[(1) - (1)].stmt);
+        ;}
+    break;
+
+  case 7:
+#line 68 "src/parser.y"
+    {
         (yyval.stmt) = new VarDeclStmt((yyvsp[(2) - (3)].sval));
+        free((yyvsp[(2) - (3)].sval));
     ;}
     break;
 
   case 8:
-#line 63 "src/parser.y"
+#line 75 "src/parser.y"
     {
         (yyval.stmt) = new AssignStmt((yyvsp[(1) - (4)].sval), (yyvsp[(3) - (4)].expr));
+        free((yyvsp[(1) - (4)].sval));
     ;}
     break;
 
   case 9:
-#line 69 "src/parser.y"
+#line 82 "src/parser.y"
     {
             (yyval.expr) = new BinaryExpr('+', (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
         ;}
     break;
 
   case 10:
-#line 72 "src/parser.y"
+#line 85 "src/parser.y"
     {
             (yyval.expr) = new BinaryExpr('-',(yyvsp[(1) - (3)].expr),(yyvsp[(3) - (3)].expr));
         ;}
     break;
 
   case 11:
-#line 75 "src/parser.y"
+#line 88 "src/parser.y"
     {
             (yyval.expr) = (yyvsp[(1) - (1)].expr);
         ;}
     break;
 
   case 12:
-#line 81 "src/parser.y"
+#line 94 "src/parser.y"
     {
             (yyval.expr) = new BinaryExpr('*', (yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
         ;}
     break;
 
   case 13:
-#line 84 "src/parser.y"
+#line 97 "src/parser.y"
     {
             (yyval.expr) = new BinaryExpr('/',(yyvsp[(1) - (3)].expr), (yyvsp[(3) - (3)].expr));
         ;}
     break;
 
   case 14:
-#line 87 "src/parser.y"
+#line 100 "src/parser.y"
     {
             (yyval.expr) =(yyvsp[(1) - (1)].expr);
         ;}
     break;
 
   case 15:
-#line 94 "src/parser.y"
+#line 107 "src/parser.y"
     {
             (yyval.expr) = new IntExpr((yyvsp[(1) - (1)].ival));
         ;}
     break;
 
   case 16:
-#line 97 "src/parser.y"
+#line 110 "src/parser.y"
     {
             (yyval.expr) = new VarExpr((yyvsp[(1) - (1)].sval));
+            free((yyvsp[(1) - (1)].sval));
         ;}
     break;
 
   case 17:
-#line 100 "src/parser.y"
+#line 114 "src/parser.y"
     {
             (yyval.expr) = (yyvsp[(2) - (3)].expr);
         ;}
@@ -1454,7 +1479,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1458 "parser.tab.c"
+#line 1483 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1668,7 +1693,7 @@ yyreturn:
 }
 
 
-#line 107 "src/parser.y"
+#line 121 "src/parser.y"
 
 
 void yyerror(const char *s){
@@ -1679,6 +1704,20 @@ int main(){
     printf("Parsing started.......\n");
     yyparse();
     printf("Parsing finished.\n");
+
+    //Execute program
+    for(Stmt* s:programStatements){
+        execStmt(s);
+    }
+
+    printSymbolTable();
+
+    // Cleanup: delete all AST nodes
+    for(Stmt* s:programStatements){
+        delete s;
+    }
+    programStatements.clear();
+
     return 0;
 }
 

@@ -49,3 +49,10 @@ lex.yy.c = Machine built from blueprint
 
 lexer = Running machine
 -------------------------------------------
+
+Day 1- source code -> flex -> Tokens 
+
+Day 2 - source code -> flex -> tokens -> Bison -> parsed structure
+
+Bison'e job -> Do these tokens form a valid program according to my grammar?
+

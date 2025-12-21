@@ -5,34 +5,32 @@
 #include<string>
 #include<vector>
 
-struct  ASTNode
+struct  ASTNode     //base class for all the nodes
 {
     virtual ~ASTNode()=default; //When deleting a node, delete it properly (Without this: Child objects may not be destroyed correctly, Memory problems can happen)
 };
 
-// using ASTNodePtr=std::shared_ptr<ASTNode>;  // create a type alias typedef std::shared_ptr<ASTNode> ASTNodePtr;
 
-// -------Expressions ----------
+// -------Expressions (code that calculates and return a value) ----------
 
-struct Expr: ASTNode{};
+struct Expr: ASTNode{};     //Base class for all the expressions
 
-// using ExprPtr=std::shared_ptr<Expr>;
 
 //Integer literal: 10
-
-struct IntExpr: Expr{
+//": Expr" means IntExpr is a type of Expr ie inheritance 
+struct IntExpr: Expr{   //store the number that apppears directly in the code var x=44 (AST -> nodetype: IntExpr, value= 44)
     int value;
-    explicit IntExpr(int v):value(v) {}
+    explicit IntExpr(int v):value(v) {} //explicit - prevents accidental conversions. (Without it, c++ might automatically converts int to IntExpr in unexpected ways. We want to be explicit means I am creating an IntExpr)
 };
 
 // variable refernce : x
-struct VarExpr : Expr {
+struct VarExpr : Expr {     //Stores the name of a variable when it's used in an expression
     std::string name;
     explicit VarExpr(const std::string& n): name(n) {}
 };
 
 // Binary expression: a+b
-struct BinaryExpr : Expr{
+struct BinaryExpr : Expr{       //Stores an operation between two expressions
     char op;
     Expr* left;
     Expr* right;
