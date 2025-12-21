@@ -1,0 +1,15 @@
+var x = 10;
+var y = 5;
+var res = 0;
+
+if (x > y) {
+   res = 100;
+} else {
+   res = 0;
+}
+
+if (y == 5) {
+   res = res + 11;
+}
+
+res;

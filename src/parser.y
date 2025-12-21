@@ -22,7 +22,14 @@ struct ASTNode *root = NULL;
 %token VAR IF ELSE WHILE
 %token EQ NE LE GE
 
-%type <node> expression term factor assignment program statement_list statement
+%type <node> expression term factor assignment program statement_list statement block variable_decl if_statement
+
+/* Precedence (Lowest to Highest) */
+%left EQ NE
+%left '<' '>' LE GE
+%left '+' '-'
+%left '*' '/'
+
 
 %%
 
@@ -36,25 +43,48 @@ statement_list:
     ;
 
 statement:
-    assignment ';'      { $$ = $1; }  
-    | expression ';'    { $$ = $1; }  
+    variable_decl       { $$ = $1; }
+    | assignment ';'    { $$ = $1; }
+    | if_statement      { $$ = $1; }
+    | block             { $$ = $1; }
+    | expression ';'    { $$ = $1; } 
+    ;
+
+block:
+    '{' statement_list '}'  { $$ = $2; }
+    ;
+
+variable_decl:
+    VAR IDENTIFIER ';'                  { $$ = createVarDeclNode($2, NULL); }
+    | VAR IDENTIFIER '=' expression ';' { $$ = createVarDeclNode($2, $4); }
     ;
 
 assignment:
     IDENTIFIER '=' expression   { $$ = createAssignmentNode($1, $3); }
     ;
 
+if_statement:
+    IF '(' expression ')' statement                 { $$ = createIfNode($3, $5, NULL); }
+    | IF '(' expression ')' statement ELSE statement { $$ = createIfNode($3, $5, $7); }
+    ;
 
 expression:
-    term                { $$ = $1; }
-    | expression '+' term { $$ = createOperatorNode('+', $1, $3); }
-    | expression '-' term { $$ = createOperatorNode('-', $1, $3); }
+    expression '+' expression { $$ = createOperatorNode('+', $1, $3); }
+    | expression '-' expression { $$ = createOperatorNode('-', $1, $3); }
+    | expression '*' expression { $$ = createOperatorNode('*', $1, $3); }
+    | expression '/' expression { $$ = createOperatorNode('/', $1, $3); }
+    | expression '<' expression { $$ = createOperatorNode('<', $1, $3); }
+    | expression '>' expression { $$ = createOperatorNode('>', $1, $3); }
+    | expression EQ expression  { $$ = createOperatorNode(EQ, $1, $3); }
+    | expression NE expression  { $$ = createOperatorNode(NE, $1, $3); }
+    | expression LE expression  { $$ = createOperatorNode(LE, $1, $3); }
+    | expression GE expression  { $$ = createOperatorNode(GE, $1, $3); }
+    | '(' expression ')'        { $$ = $2; }
+    | term                      { $$ = $1; }
     ;
 
 term:
     factor              { $$ = $1; }
-    | term '*' factor   { $$ = createOperatorNode('*', $1, $3); }
-    | term '/' factor   { $$ = createOperatorNode('/', $1, $3); }
     ;
 
 factor:
