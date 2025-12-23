@@ -5,7 +5,7 @@
 %{
     #include<cstdio>
     #include<cstdlib>
-    #include "src/ast.hpp"
+    #include "ast.hpp"
     #include <vector>
 
     std::vector<Stmt*> programStatements;
@@ -26,6 +26,8 @@
     char* sval;
     struct Expr* expr;
     struct Stmt* stmt;
+
+    std::vector<Stmt*>* stmt_list;
 }
 
 
@@ -40,8 +42,9 @@
 %token <ival> INTEGER
 %token <sval> IDENTIFIER
 
-%type <stmt> statement variable_decl assignment
-%type <expr> expression term factor
+%type <stmt> statement variable_decl assignment if_statement while_statement block
+%type <stmt_list> block_statements 
+%type <expr> expression equality comparision term factor primary unary
 
 %%
 program:
@@ -49,24 +52,37 @@ program:
     ;
 
 statement_list:
-    statement_list statement;
+    statement_list statement{
+        programStatements.push_back($2);
+    }
     |
     ;
 
 statement:
     variable_decl{
-            programStatements.push_back($1);
             $$ =$1;
         }
     | assignment {
-            programStatements.push_back($1);
             $$=$1;
-        }    
+        }
+    | if_statement {
+            $$ = $1;
+        }
+    | while_statement {
+            $$ = $1;
+        }
+    | block {
+            $$ = $1;
+        }
     ;
 
 variable_decl:
     VAR IDENTIFIER SEMICOLON {
         $$ = new VarDeclStmt($2);
+        free($2);
+    }
+    | VAR IDENTIFIER ASSIGN expression SEMICOLON {
+        $$ = new VarDeclInitStmt($2,$4);
         free($2);
     }
     ;
@@ -78,43 +94,128 @@ assignment:
     }
     ;
 
-expression:
-        expression PLUS term {
-            $$ = new BinaryExpr('+', $1, $3);
-        }
-    |   expression MINUS term {
-            $$ = new BinaryExpr('-',$1,$3);
-        }
-    |   term {
-            $$ = $1;
-        }
+if_statement:
+    IF LPAREN expression RPAREN statement {
+        $$ = new IfStmt($3,$5);
+    }
+    | IF LPAREN expression RPAREN statement ELSE statement {
+        $$ = new IfStmt($3,$5,$7);
+    }
     ;
 
+while_statement:
+    WHILE LPAREN expression RPAREN statement{
+        $$ = new WhileStmt($3, $5);
+    }
+    ;
+
+block:
+    LBRACE block_statements RBRACE {
+        $$ = new BlockStmt(*$2);
+
+        delete $2;
+    }
+    ;
+
+block_statements:
+    block_statements statement {
+        $$ = $1;
+        $$->push_back($2);
+    }
+    |{
+        $$ = new std::vector<Stmt*>();
+    }
+    ;
+
+expression:
+    equality {
+        $$ = $1;
+    }
+    ;
+
+equality:
+    equality EQ comparision {
+        $$ = new BinaryExpr('E',$1,$3);
+    }
+    | equality NEQ comparision {
+        $$ = new BinaryExpr('N',$1,$3);
+    }
+    | comparision {
+        $$ = $1;
+    }
+    ;
+
+comparision:
+    comparision LT term{
+        $$ = new BinaryExpr('<',$1,$3);
+    }
+    | comparision GT term {
+        $$ = new BinaryExpr('>',$1,$3);
+    }
+    | comparision LE term {
+        $$ = new BinaryExpr('L', $1, $3);
+
+    }
+    | comparision GE term {
+        $$ = new BinaryExpr('G',$1,$3);
+    }
+    | term {
+        $$ = $1;
+    }
+    ;
+
+
 term:
-        term MUL factor {
-            $$ = new BinaryExpr('*', $1, $3);
+        term PLUS factor {
+            $$ = new BinaryExpr('+', $1, $3);
         }
-    |   term DIV factor {
-            $$ = new BinaryExpr('/',$1, $3);
-        } 
+    |   term MINUS factor {
+            $$ = new BinaryExpr('-',$1, $3);
+        }
     |   factor {
             $$ =$1;
         }
 
     ;
 
+
 factor:
-        INTEGER {
-            $$ = new IntExpr($1);
+        factor MUL unary {
+            $$ = new BinaryExpr('*', $1, $3);
         }
-    |   IDENTIFIER {
-            $$ = new VarExpr($1);
-            free($1);
+    |   factor DIV unary {
+            $$ = new BinaryExpr('/',$1, $3);
         }
-    |   LPAREN expression RPAREN {
-            $$ = $2;
+    |   unary {
+            $$ =$1;
         }
 
+    ;
+
+
+unary:
+    PLUS unary{
+        $$ = $2;
+    }
+    | MINUS unary {
+        $$ = new BinaryExpr('n', new IntExpr(0), $2);
+    }
+    | primary {
+        $$ = $1;
+    }
+    ;
+
+primary:
+    INTEGER{
+        $$ = new IntExpr($1);
+    }
+    | IDENTIFIER {
+        $$ = new VarExpr($1);
+        free($1);
+    }
+    | LPAREN expression RPAREN {
+        $$ = $2;
+    }
     ;
 
 

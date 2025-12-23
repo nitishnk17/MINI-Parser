@@ -98,9 +98,11 @@ typedef union YYSTYPE
     char* sval;
     struct Expr* expr;
     struct Stmt* stmt;
+
+    std::vector<Stmt*>* stmt_list;
 }
 /* Line 1529 of yacc.c.  */
-#line 104 "parser.tab.h"
+#line 106 "build/parser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

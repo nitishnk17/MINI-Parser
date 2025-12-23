@@ -1,5 +1,6 @@
+#line 1 "build/lex.yy.c"
 
-#line 2 "lex.yy.c"
+#line 3 "build/lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -475,10 +476,10 @@ char *yytext;
 #include<cstdio>
 #include<cstdlib>
 #include<cstring>
-#include "src/ast.hpp"
+#include "ast.hpp"
 #include "parser.tab.h"
-#line 480 "lex.yy.c"
-#line 481 "lex.yy.c"
+#line 481 "build/lex.yy.c"
+#line 482 "build/lex.yy.c"
 
 #define INITIAL 0
 
@@ -698,7 +699,7 @@ YY_DECL
 #line 11 "src/lexer.l"
 
 
-#line 701 "lex.yy.c"
+#line 702 "build/lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -889,7 +890,7 @@ YY_RULE_SETUP
 #line 51 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 892 "lex.yy.c"
+#line 893 "build/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
