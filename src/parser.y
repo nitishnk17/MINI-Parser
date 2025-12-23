@@ -22,14 +22,17 @@ struct ASTNode *root = NULL;
 %token VAR IF ELSE WHILE
 %token EQ NE LE GE
 
-%type <node> expression term factor assignment program statement_list statement block variable_decl if_statement
+%type <node> expression term factor assignment program statement_list statement block variable_decl if_statement while_statement
 
 /* Precedence (Lowest to Highest) */
 %left EQ NE
 %left '<' '>' LE GE
 %left '+' '-'
 %left '*' '/'
+%right UMINUS
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 %%
 
@@ -48,6 +51,7 @@ statement:
     | if_statement      { $$ = $1; }
     | block             { $$ = $1; }
     | expression ';'    { $$ = $1; } 
+    | while_statement   { $$ = $1; }
     ;
 
 block:
@@ -64,8 +68,12 @@ assignment:
     ;
 
 if_statement:
-    IF '(' expression ')' statement                 { $$ = createIfNode($3, $5, NULL); }
-    | IF '(' expression ')' statement ELSE statement { $$ = createIfNode($3, $5, $7); }
+    IF '(' expression ')' statement %prec LOWER_THAN_ELSE { $$ = createIfNode($3, $5, NULL); }
+    | IF '(' expression ')' statement ELSE statement      { $$ = createIfNode($3, $5, $7); }
+    ;
+
+while_statement:
+    WHILE '(' expression ')' statement { $$ = createWhileNode($3, $5); }
     ;
 
 expression:
@@ -79,7 +87,8 @@ expression:
     | expression NE expression  { $$ = createOperatorNode(NE, $1, $3); }
     | expression LE expression  { $$ = createOperatorNode(LE, $1, $3); }
     | expression GE expression  { $$ = createOperatorNode(GE, $1, $3); }
-    | '(' expression ')'        { $$ = $2; }
+    | '-' expression %prec UMINUS { $$ = createOperatorNode('-', createNumberNode(0), $2); }
+    | '+' expression %prec UMINUS { $$ = $2; }
     | term                      { $$ = $1; }
     ;
 

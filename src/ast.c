@@ -115,6 +115,15 @@ struct ASTNode* createIfNode(struct ASTNode* cond, struct ASTNode* ifBody, struc
     return n;
 }
 
+struct ASTNode* createWhileNode(struct ASTNode* cond, struct ASTNode* body) {
+    ASTNode *n = malloc(sizeof(ASTNode));
+    n->type = NODE_WHILE;
+    n->left = cond;       
+    n->right = body;      
+    n->elsePtr = NULL;
+    return n;
+}
+
 
 int evaluate(struct ASTNode* node) {
     if (node == NULL) return 0;
@@ -155,6 +164,14 @@ int evaluate(struct ASTNode* node) {
             return evaluate(node->elsePtr);
         }
         return 0;
+    }
+
+    if (node->type == NODE_WHILE) {
+        int lastVal = 0;
+        while (evaluate(node->left)) {
+            lastVal = evaluate(node->right);
+        }
+        return lastVal;
     }
 
     int leftVal = evaluate(node->left);

@@ -1,0 +1,12 @@
+// This is a comment test
+var i = 0;
+var sum = 0;
+
+/* This is a 
+   block comment */
+
+while (i < 5) {
+   sum = sum + i;
+   i = i + 1;
+}
+sum;

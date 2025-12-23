@@ -47,5 +47,8 @@
     /* Catch-all for errors */
 .                   { fprintf(stderr, "Unknown character %c\n", *yytext); }
 
+"//".* { /* Ignore single-line comments */ }
+"/*"([^*]|\*+[^*/])*\*+"/" { /* Ignore multi-line comments */ }
+
 %%
 

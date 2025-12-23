@@ -8,7 +8,8 @@ typedef enum {
     NODE_ASSIGN,
     NODE_SEQ,
     NODE_IF_STMT,
-    NODE_VAR_DCLRT
+    NODE_VAR_DCLRT,
+    NODE_WHILE
 } NodeType;
 
 typedef struct ASTNode {
@@ -34,6 +35,7 @@ struct ASTNode* createVarDeclNode(char* name, struct ASTNode* initExpr);
 struct ASTNode* createIfNode(struct ASTNode* cond, struct ASTNode* ifBody, struct ASTNode* elseBody);
 void declareVariable(char* name);
 
+struct ASTNode* createWhileNode(struct ASTNode* cond, struct ASTNode* body);
 
 int evaluate(struct ASTNode* node);
 
