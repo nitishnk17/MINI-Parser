@@ -7,35 +7,35 @@
 
 struct  ASTNode     //base class for all the nodes
 {
-    virtual ~ASTNode()=default; //When deleting a node, delete it properly (Without this: Child objects may not be destroyed correctly, Memory problems can happen)
+    virtual ~ASTNode()=default; //when deleting a node, delete it properly (without this: child objects may not be destroyed correctly, memory problems can happen)
 };
 
 
-// -------Expressions (code that calculates and return a value) ----------
+// -------expressions (code that calculates and return a value) ----------
 
-struct Expr: ASTNode{};     //Base class for all the expressions
+struct Expr: ASTNode{};     //base class for all the expressions
 
 
-//Integer literal: 10
-//": Expr" means IntExpr is a type of Expr ie inheritance 
-struct IntExpr: Expr{   //store the number that apppears directly in the code var x=44 (AST -> nodetype: IntExpr, value= 44)
+//integer literal: 10
+//": expr" means intexpr is a type of expr ie inheritance 
+struct IntExpr: Expr{   //store the number that apppears directly in the code var x=44 (ast -> nodetype: intexpr, value= 44)
     int value;
-    explicit IntExpr(int v):value(v) {} //explicit - prevents accidental conversions. (Without it, c++ might automatically converts int to IntExpr in unexpected ways. We want to be explicit means I am creating an IntExpr)
+    explicit IntExpr(int v):value(v) {} //explicit - prevents accidental conversions. (without it, c++ might automatically converts int to intexpr in unexpected ways. we want to be explicit means i am creating an intexpr)
 };
 
 // variable refernce : x
 
-//AST Repr- VarExpr("x") : Node type: VarExpr, name stored: "x"
+//ast repr- varexpr("x") : node type: varexpr, name stored: "x"
 
-struct VarExpr : Expr {     //Stores the name of a variable when it's used in an expression
+struct VarExpr : Expr {     //stores the name of a variable when it's used in an expression
     std::string name;
     explicit VarExpr(const std::string& n): name(n) {}
 };
 
-// Binary expression: a+b
-struct BinaryExpr : Expr{       //Stores an operation between two expressions
+// binary expression: a+b
+struct BinaryExpr : Expr{       //stores an operation between two expressions
     char op;        // operation to perform(+,-,*,/....)
-    Expr* left;     // Expr* because it can be int,var,expression
+    Expr* left;     // expr* because it can be int,var,expression
     Expr* right;
 
     BinaryExpr(char oper, Expr* l, Expr* r): op(oper), left(l), right(r) {}
@@ -46,7 +46,7 @@ struct BinaryExpr : Expr{       //Stores an operation between two expressions
     }
 };
 
-// ------------- Statements( does not return values) ----------------
+// ------------- statements( does not return values) ----------------
 // statements means code that perfoems an action or controls flows 
 //like var x=10, x=10, if(x>3){...}, while(i<2){....}
 
@@ -54,7 +54,7 @@ struct Stmt : ASTNode{};
 
 
 //var x;
-// VarDecStmt("x") -> type: VarDeclStmt, name: "x" default value is 0
+// vardecstmt("x") -> type: vardeclstmt, name: "x" default value is 0
 struct VarDeclStmt : Stmt{
     std::string name;
     explicit VarDeclStmt(const std::string& n) : name(n) {}
@@ -62,10 +62,10 @@ struct VarDeclStmt : Stmt{
 
 
 // x=expr (x=5+3)
-// EXECUTION: When this node is executed:
-// Evaluate the expression on right (e.g, 5 + 3 = 8)
-// Look up variable name in symbol table
-// Update its value to the result (x becomes 8)
+// execution: when this node is executed:
+// evaluate the expression on right (e.g, 5 + 3 = 8)
+// look up variable name in symbol table
+// update its value to the result (x becomes 8)
 struct AssignStmt : Stmt {
     std::string name;
     Expr* expr;
@@ -78,11 +78,11 @@ struct AssignStmt : Stmt {
 };
 
 //var x=expr;
-// WHY SEPARATE FROM VarDeclStmt AND AssignStmt?:
-// Grammar has separate rules for:
+// why separate from vardeclstmt and assignstmt?:
+// grammar has separate rules for:
 // var x;        (declaration only)
 // var x = 10;   (declaration with init)
-// This is ONE statement that does both in user's code
+// this is one statement that does both in user's code
 struct VarDeclInitStmt : Stmt{
     std::string name;
 
@@ -96,20 +96,20 @@ struct VarDeclInitStmt : Stmt{
 };
 
 
-// if (condition) thenStmt else elseStmt
+// if (condition) thenstmt else elsestmt
 /*
- *   if (x > 5)              // Only condition and then-branch
+ *   if (x > 5)              // only condition and then-branch
  *       y = 10;
  *
- *   if (x > 5)              // Condition, then-branch, and else-branch
+ *   if (x > 5)              // condition, then-branch, and else-branch
  *       y = 10;
  *   else
  *       y = 20;
 
- WHY THREE POINTERS?:
-   - condition: Expression to test (must evaluate to number)
-   - thenStmt: Statement to execute if condition is true
-   - elseStmt: Statement to execute if condition is false (optional)
+ why three pointers?:
+   - condition: expression to test (must evaluate to number)
+   - thenstmt: statement to execute if condition is true
+   - elsestmt: statement to execute if condition is false (optional)
 */
 struct IfStmt : Stmt{
 
@@ -130,12 +130,12 @@ struct IfStmt : Stmt{
     }
 };
 
-//While
+//while
 /*
- *   while (x < 10)          // Simple while
+ *   while (x < 10)          // simple while
  *       x = x + 1;
  *
- *   while (i < 5) {         // While with block
+ *   while (i < 5) {         // while with block
  *       sum = sum + i;
  *       i = i + 1;
  *   }
@@ -157,7 +157,7 @@ struct WhileStmt : Stmt {
     }
 };
 
-// Block Statement: {stmt1;stmt2; stmt3; ... }
+// block statement: {stmt1;stmt2; stmt3; ... }
 /*
 *   {
  *       var x = 10;
@@ -184,18 +184,18 @@ struct BlockStmt : Stmt {
 
 
 /*
-Why shared_ptr?
+why shared_ptr?
 
-In an AST:
+in an ast:
 
-Nodes are connected
-Multiple parts may refer to same node
-Manual delete is error-prone
+nodes are connected
+multiple parts may refer to same node
+manual delete is error-prone
 
 shared_ptr:
 
-Automatic memory management
-Reference counting
-No memory leaks
+automatic memory management
+reference counting
+no memory leaks
 
 */

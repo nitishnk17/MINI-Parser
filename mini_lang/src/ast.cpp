@@ -1,4 +1,4 @@
-// This file contains the EXECUTION logic for our Abstract Syntax Tree. While ast.hpp DEFINES what nodes look like (structure), ast.cpp IMPLEMENTS what nodes DO (behavior).
+// this file contains the execution logic for our abstract syntax tree. while ast.hpp defines what nodes look like (structure), ast.cpp implements what nodes do (behavior).
 
 #include<iostream>
 #include "ast.hpp"
@@ -7,32 +7,32 @@
 #include<stdexcept>
 
 void printSymbolTable();
+void printExpr(Expr* expr, int indent);
+void printStmt(Stmt* stmt, int indent);
 
 static std::map<std::string, int> symbolTable;
 
 int evalExpr(Expr* expr){
     //integer literals
     /*
-     * HOW IT WORKS:
-     *   1. Try to cast expr to IntExpr*
-     *   2. If successful (intExpr is not nullptr):
-     *      a. We have an integer literal
-     *      b. Return its stored value
-     *   3. If unsuccessful: intExpr is nullptr, skip this if-block
+     * how it works:
+     *   1.try to cast expr to intexpr*
+     *   2.if successful (intexpr is not nullptr):
+     *      a.we have an integer literal
+     *      b.return its stored value
+     *   3.if unsuccessful: intexpr is nullptr, skip this if-block
     */
     if(auto intExpr= dynamic_cast<IntExpr*>(expr)){
         return intExpr->value;
     }
 
 
-
     //variable refernce
     /*
-     *  PROCESS:
-     *   1. Extract variable name from the node
-     *   2. Search for it in the symbol table
-     *   3. If found: return its value
-     *   4. If not found: throw an error (undefined variable)
+     *  process:
+     *   1.extract variable name from the node
+     *   2.search for it in the symbol table
+     *   3.if found: return its value else error (undefined variable)
     */
     if(auto varExpr=dynamic_cast<VarExpr*>(expr)){
         auto it=symbolTable.find(varExpr->name);
@@ -42,13 +42,13 @@ int evalExpr(Expr* expr){
         return it->second;
     }
 
-    //Binary expression
+    //binary expression
     /*
-     * PROCESS:
-     *   1. Recursively evaluate the left operand → get a number
-     *   2. Recursively evaluate the right operand → get a number
-     *   3. Apply the operator to these two numbers
-     *   4. Return the result
+     * process:
+     *   1.recursively evaluate the left operand -> get a number
+     *   2.recursively evaluate the right operand -> get a number
+     *   3.apply the operator to these two numbers
+     *   4.return the result
     */
 
     if(auto binExpr=dynamic_cast<BinaryExpr*>(expr)){
@@ -83,32 +83,32 @@ int evalExpr(Expr* expr){
 }
 
 
-//Statement executor
+//statement executor
 /*
-* HOW IT WORKS:
-*   Similar to evalExpr, but instead of returning a value, we perform actions:
-*   - VarDeclStmt: Add variable to symbol table with value 0
-*   - VarDeclInitStmt: Add variable with initial value
-*   - AssignStmt: Change variable's value
-*   - IfStmt: Execute then or else branch based on condition
-*   - WhileStmt: Repeatedly execute body while condition is true
-*   - BlockStmt: Execute each statement in the block in order
+* how it works:
+*   similar to evalexpr, but instead of returning a value, we perform actions:
+*   - vardeclstmt: add variable to symbol table with value 0
+*   - vardeclinitstmt: add variable with initial value
+*   - assignstmt: change variable's value
+*   - ifstmt: execute then or else branch based on condition
+*   - whilestmt: repeatedly execute body while condition is true
+*   - blockstmt: execute each statement in the block in order
 
-* SIDE EFFECTS:
-*   This function CHANGES THE WORLD:
-*   - Modifies symbol table (variables get created/changed)
-*   - May trigger loops and conditional execution
-*   - May recursively execute other statements
+* side effects:
+*   this function changes the world:
+*   - modifies symbol table (variables get created/changed)
+*   - may trigger loops and conditional execution
+*   - may recursively execute other statements
 
 
-* EXAMPLES:
-*   execStmt(VarDeclStmt("x"))          → symbolTable["x"] = 0
-*   execStmt(AssignStmt("x", 10))       → symbolTable["x"] = 10
-*   execStmt(IfStmt(x>5, print("big"))) → if x>5, execute print
+* examples:
+*   execstmt(vardeclstmt("x"))  -> symboltable["x"] = 0
+*   execstmt(assignstmt("x", 10))  -> symboltable["x"] = 10
+*   execstmt(ifstmt(x>5, print("big"))) -> if x>5, execute print
 */
 
-void execStmt(Stmt* stmt){ //take a statement AST node and execute it (perform its action)
-    // variable Declaration (create variable in symbol table with value 0)
+void execStmt(Stmt* stmt){ //take a statement ast node and execute it (perform its action)
+    // variable declaration (create variable in symbol table with value 0)
     if(auto decl=dynamic_cast<VarDeclStmt*>(stmt)){
         symbolTable[decl->name]=0;
         return;
@@ -122,21 +122,21 @@ void execStmt(Stmt* stmt){ //take a statement AST node and execute it (perform i
         return;
     }
 
-    //Assignment
+    //assignment
     /*
-     * Check if variable was declared with 'var'
-     * Evaluate the right hand side expression
+     * check if variable was declared with 'var'
+     * evaluate the right hand side expression
      * update the variable's value in symbol table
      * 
-     *  Code: x = x + 1;
-     *   Action:
-     *     1. Check if "x" exists in symbol table
-     *     2. If not: throw error "Cannot assign to undeclared variable: x"
-     *     3. If yes: Evaluate x + 1:
-     *        a. Look up x → suppose it's 10
-     *        b. Compute 10 + 1 → 11
-     *     4. symbolTable["x"] = 11
-     *   After: x now has value 11
+     *  code: x = x + 1;
+     *   action:
+     *     1.check if "x" exists in symbol table
+     *     2.if not: error "cannot assign to undeclared variable: x"
+     *     3.if yes: evaluate x + 1:
+     *        a.look up x-> suppose it's 10
+     *        b.compute 10 + 1-> 11
+     *     4.symboltable["x"] = 11
+     *   after:x now has value 11
     */
     if(auto assign = dynamic_cast<AssignStmt*>(stmt)){
         auto it=symbolTable.find(assign->name);
@@ -152,16 +152,16 @@ void execStmt(Stmt* stmt){ //take a statement AST node and execute it (perform i
 
     //if statement
     /*
-     * Evaluate the condition expression
-     * If result is non-zero (true): execute then-branch
-     * If result is zero (false): execute else-branch (if it exists)
-     * EXAMPLE (with else):
-     *   Code: if (x > 5) y = 10; else y = 20;
-     *   If x=7:
-     *     1. Evaluate x > 5 → 7 > 5 → 1 (true)
-     *     2. 1 != 0, so execute then-branch
-     *     3. Execute y = 10
-     *   After: y is 10
+     * evaluate the condition expression
+     * if result is non-zero (true): execute then-branch
+     * if result is zero (false): execute else-branch (if it exists)
+     * example (with else):
+     *   code: if (x > 5) y = 10; else y = 20;
+     *   if x=7:
+     *     1)evaluate x > 5 -> 7 > 5 -> 1 (true)
+     *     2)1 != 0, so execute then-branch
+     *     3)execute y = 10
+     *   after:y is 10
     */
 
     if(auto ifStmt = dynamic_cast<IfStmt*>(stmt)){
@@ -177,9 +177,9 @@ void execStmt(Stmt* stmt){ //take a statement AST node and execute it (perform i
 
     //while loop
     /*
-     * Evaluate condition
-     * If true (non-zero): execute body, go back to step 1
-     * If false (zero): exit loop, continue after while
+     * evaluate condition
+     * if true (non-zero): execute body, go back to step 1
+     * if false (zero): exit loop, continue after while
      *
     */
 
@@ -191,28 +191,28 @@ void execStmt(Stmt* stmt){ //take a statement AST node and execute it (perform i
         return;
     }
 
-    //Block Statement
+    //block statement
     /*
-     * ACTION: Execute each statement in the block, in order
+     * action: execute each statement in the block, in order
      *
-     * WHY BLOCKS EXIST?:
-     *   Many constructs expect ONE statement:
-     *     if (condition) STATEMENT
-     *     while (condition) STATEMENT
+     * why blocks exist?:
+     *   many constructs expect one statement:
+     *     if (condition) statement
+     *     while (condition) statement
      *
-     *   But we often want multiple actions. Solution: Group them in a block!
-     *     if (x > 5) {      // The { } creates ONE block statement
-     *         y = 10;       // containing multiple statements
+     *   but we often want multiple actions. solution: group them in a block!
+     *     if (x > 5) {    
+     *         y = 10;       
      *         z = 20;
      *     }
      * 
-     * Execution:
-     *     1. Execute: var x = 10; → x is created with value 10
-     *     2. Execute: var y = 20; → y is created with value 20
-     *     3. Execute: var sum = x + y;
-     *        a. Evaluate x + y → 10 + 20 → 30
-     *        b. Create sum with value 30
-     *   After: x=10, y=20, sum=30
+     * execution:
+     *     1.execute: var x= 10; -> x is created with value 10
+     *     2.execute: var y= 20; -> y is created with value 20
+     *     3.execute: var sum= x + y;
+     *        a)evaluate x + y -> 10 + 20 -> 30
+     *        b)create sum with value 30
+     *   after:x=10 y=20 sum=30
     */
 
     if(auto blockStmt = dynamic_cast<BlockStmt*> (stmt)){
@@ -233,15 +233,119 @@ void printSymbolTable(){
     }
 }
 
+// for indentation
+static void printIndent(int indent) {
+    for (int i = 0; i < indent; i++) {
+        std::cout << "  ";
+    }
+}
 
+// printing an expression tree
+void printExpr(Expr* expr, int indent) {
+    if (auto intExpr = dynamic_cast<IntExpr*>(expr)) {
+        printIndent(indent);
+        std::cout << "IntExpr(" << intExpr->value << ")\n";
+        return;
+    }
+
+    if (auto varExpr = dynamic_cast<VarExpr*>(expr)) {
+        printIndent(indent);
+        std::cout << "VarExpr(\"" << varExpr->name << "\")\n";
+        return;
+    }
+
+    if (auto binExpr = dynamic_cast<BinaryExpr*>(expr)) {
+        printIndent(indent);
+        std::string opName;
+        switch (binExpr->op) {
+            case '+': opName = "PLUS"; break;
+            case '-': opName = "MINUS"; break;
+            case '*': opName = "MUL"; break;
+            case '/': opName = "DIV"; break;
+            case 'E': opName = "EQ"; break;
+            case 'N': opName = "NEQ"; break;
+            case '<': opName = "LT"; break;
+            case '>': opName = "GT"; break;
+            case 'L': opName = "LE"; break;
+            case 'G': opName = "GE"; break;
+            case 'n': opName = "NEG"; break;
+            default: opName = "UNKNOWN"; break;
+        }
+        std::cout << "BinaryExpr(" << opName << ")\n";
+        printExpr(binExpr->left, indent + 1);
+        printExpr(binExpr->right, indent + 1);
+        return;
+    }
+}
+
+// print a statement tree
+void printStmt(Stmt* stmt, int indent) {
+    if (auto decl = dynamic_cast<VarDeclStmt*>(stmt)) {
+        printIndent(indent);
+        std::cout << "VarDeclStmt(\"" << decl->name << "\")\n";
+        return;
+    }
+
+    if (auto declInit = dynamic_cast<VarDeclInitStmt*>(stmt)) {
+        printIndent(indent);
+        std::cout << "VarDeclInitStmt(\"" << declInit->name << "\")\n";
+        printExpr(declInit->expr, indent + 1);
+        return;
+    }
+
+    if (auto assign = dynamic_cast<AssignStmt*>(stmt)) {
+        printIndent(indent);
+        std::cout << "AssignStmt(\"" << assign->name << "\")\n";
+        printExpr(assign->expr, indent + 1);
+        return;
+    }
+
+    if (auto ifStmt = dynamic_cast<IfStmt*>(stmt)) {
+        printIndent(indent);
+        std::cout << "IfStmt\n";
+        printIndent(indent + 1);
+        std::cout << "Condition:\n";
+        printExpr(ifStmt->condition, indent + 2);
+        printIndent(indent + 1);
+        std::cout << "Then:\n";
+        printStmt(ifStmt->thenStmt, indent + 2);
+        if (ifStmt->elseStmt) {
+            printIndent(indent + 1);
+            std::cout << "Else:\n";
+            printStmt(ifStmt->elseStmt, indent + 2);
+        }
+        return;
+    }
+
+    if (auto whileStmt = dynamic_cast<WhileStmt*>(stmt)) {
+        printIndent(indent);
+        std::cout << "WhileStmt\n";
+        printIndent(indent + 1);
+        std::cout << "Condition:\n";
+        printExpr(whileStmt->condition, indent + 2);
+        printIndent(indent + 1);
+        std::cout << "Body:\n";
+        printStmt(whileStmt->body, indent + 2);
+        return;
+    }
+
+    if (auto blockStmt = dynamic_cast<BlockStmt*>(stmt)) {
+        printIndent(indent);
+        std::cout << "BlockStmt\n";
+        for (Stmt* s : blockStmt->statements) {
+            printStmt(s, indent + 1);
+        }
+        return;
+    }
+}
 
 
 
 
 /*
-* WHAT IS dynamic_cast?:
-*   A C++ operator that safely converts pointers between related types
-*   - Checks if 'expr' actually points to an IntExpr object
-*   - If YES: Returns pointer to IntExpr
-*   - If NO: Returns nullptr
+* what is dynamic_cast?:
+*   a c++ operator that safely converts pointers between related types
+*   - checks if 'expr' actually points to an intexpr object
+*   - if yes: returns pointer to intexpr
+*   - if no: returns nullptr
 */

@@ -5,7 +5,7 @@
 #include<cstdlib>
 #include<cstring>
 #include "ast.hpp"
-#include "parser.tab.h"
+#include "parser.tab.hpp"
 %}
 
 %% // starting rules

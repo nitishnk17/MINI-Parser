@@ -1,6 +1,6 @@
-#line 1 "build/lex.yy.c"
+#line 1 "build/lex.yy.cpp"
 
-#line 3 "build/lex.yy.c"
+#line 3 "build/lex.yy.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -477,9 +477,9 @@ char *yytext;
 #include<cstdlib>
 #include<cstring>
 #include "ast.hpp"
-#include "parser.tab.h"
-#line 481 "build/lex.yy.c"
-#line 482 "build/lex.yy.c"
+#include "parser.tab.hpp"
+#line 481 "build/lex.yy.cpp"
+#line 482 "build/lex.yy.cpp"
 
 #define INITIAL 0
 
@@ -539,8 +539,6 @@ extern int yywrap ( void );
 #endif
 
 #ifndef YY_NO_UNPUT
-    
-    static void yyunput ( int c, char *buf_ptr  );
     
 #endif
 
@@ -699,7 +697,7 @@ YY_DECL
 #line 11 "src/lexer.l"
 
 
-#line 702 "build/lex.yy.c"
+#line 700 "build/lex.yy.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -890,7 +888,7 @@ YY_RULE_SETUP
 #line 51 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 893 "build/lex.yy.c"
+#line 891 "build/lex.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1225,43 +1223,6 @@ static int yy_get_next_buffer (void)
 }
 
 #ifndef YY_NO_UNPUT
-
-    static void yyunput (int c, char * yy_bp )
-{
-	char *yy_cp;
-    
-    yy_cp = (yy_c_buf_p);
-
-	/* undo effects of setting up yytext */
-	*yy_cp = (yy_hold_char);
-
-	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-		{ /* need to shift things up to make room */
-		/* +2 for EOB chars. */
-		yy_size_t number_to_move = (yy_n_chars) + 2;
-		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		char *source =
-				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
-
-		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
-			*--dest = *--source;
-
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
-
-		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
-		}
-
-	*--yy_cp = (char) c;
-
-	(yytext_ptr) = yy_bp;
-	(yy_hold_char) = *yy_cp;
-	(yy_c_buf_p) = yy_cp;
-}
 
 #endif
 

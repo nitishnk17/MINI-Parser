@@ -128,12 +128,12 @@
     std::vector<Stmt*> programStatements;
     void execStmt(Stmt* stmt);
     void printSymbolTable();
-
+    void printStmt(Stmt* stmt, int indent);
 
     int yylex();
     void yyerror(const char *s);
 
-    // Forward declarations for union
+    // forward declarations for union
     struct Expr;
     struct Stmt;
 
@@ -168,7 +168,7 @@ typedef union YYSTYPE
     std::vector<Stmt*>* stmt_list;
 }
 /* Line 193 of yacc.c.  */
-#line 172 "build/parser.tab.c"
+#line 172 "build/parser.tab.cpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -181,7 +181,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 185 "build/parser.tab.c"
+#line 185 "build/parser.tab.cpp"
 
 #ifdef short
 # undef short
@@ -1686,7 +1686,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1690 "build/parser.tab.c"
+#line 1690 "build/parser.tab.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1912,14 +1912,20 @@ int main(){
     yyparse();
     printf("Parsing finished.\n");
 
-    //Execute program
+    // print ast (syntax tree)
+    printf("\n==== Abstract Syntax Tree ====\n");
+    for(Stmt* s:programStatements){
+        printStmt(s, 0);
+    }
+
+    //execute program
     for(Stmt* s:programStatements){
         execStmt(s);
     }
 
     printSymbolTable();
 
-    // Cleanup: delete all AST nodes
+    // cleanup: delete all ast nodes
     for(Stmt* s:programStatements){
         delete s;
     }

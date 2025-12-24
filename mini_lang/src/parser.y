@@ -1,5 +1,5 @@
-// Contains: Token Declarations, Grammar rules , Semantic hooks
-// Bison reads it and generates parser.tab.c (or .cpp) and parser.tab.h
+// contains: token declarations, grammar rules , semantic hooks
+// bison reads it and generates parser.tab.c (or .cpp) and parser.tab.h
 
 
 %{
@@ -11,12 +11,12 @@
     std::vector<Stmt*> programStatements;
     void execStmt(Stmt* stmt);
     void printSymbolTable();
-
+    void printStmt(Stmt* stmt, int indent);
 
     int yylex();
     void yyerror(const char *s);
 
-    // Forward declarations for union
+    // forward declarations for union
     struct Expr;
     struct Stmt;
 %}
@@ -230,14 +230,20 @@ int main(){
     yyparse();
     printf("Parsing finished.\n");
 
-    //Execute program
+    // print ast (syntax tree)
+    printf("\n==== Abstract Syntax Tree ====\n");
+    for(Stmt* s:programStatements){
+        printStmt(s, 0);
+    }
+
+    //execute program
     for(Stmt* s:programStatements){
         execStmt(s);
     }
 
     printSymbolTable();
 
-    // Cleanup: delete all AST nodes
+    // cleanup: delete all ast nodes
     for(Stmt* s:programStatements){
         delete s;
     }

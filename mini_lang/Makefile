@@ -2,6 +2,8 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wno-write-strings -I$(SRC_DIR) -I$(BUILD_DIR)
 FLEX = flex
 BISON = bison
+FLEX_FLAGS = --nounput
+BISON_FLAGS = -d
 
 SRC_DIR = src
 BUILD_DIR = build
@@ -12,9 +14,9 @@ PARSER_SRC = $(SRC_DIR)/parser.y
 LEXER_SRC = $(SRC_DIR)/lexer.l
 AST_SRC = $(SRC_DIR)/ast.cpp
 
-PARSER_GEN = $(BUILD_DIR)/parser.tab.c
-PARSER_HDR = $(BUILD_DIR)/parser.tab.h
-LEXER_GEN = $(BUILD_DIR)/lex.yy.c
+PARSER_GEN = $(BUILD_DIR)/parser.tab.cpp
+PARSER_HDR = $(BUILD_DIR)/parser.tab.hpp
+LEXER_GEN = $(BUILD_DIR)/lex.yy.cpp
 
 PARSER_OBJ = $(BUILD_DIR)/parser.tab.o
 LEXER_OBJ = $(BUILD_DIR)/lex.yy.o
@@ -31,19 +33,19 @@ $(TARGET): $(PARSER_OBJ) $(LEXER_OBJ) $(AST_OBJ)
 
 $(PARSER_GEN) $(PARSER_HDR): $(PARSER_SRC)
 	@mkdir -p $(BUILD_DIR)
-	$(BISON) -d -o $(PARSER_GEN) $(PARSER_SRC)
+	$(BISON) $(BISON_FLAGS) -o $(PARSER_GEN) $(PARSER_SRC)
 
 $(LEXER_GEN): $(LEXER_SRC) $(PARSER_HDR)
 	@mkdir -p $(BUILD_DIR)
-	$(FLEX) -o $(LEXER_GEN) $(LEXER_SRC)
+	$(FLEX) $(FLEX_FLAGS) -o $(LEXER_GEN) $(LEXER_SRC)
 
 $(BUILD_DIR)/parser.tab.o: $(PARSER_GEN)
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -Wno-unused-function -c -o $@ $<
 
 $(BUILD_DIR)/lex.yy.o: $(LEXER_GEN)
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -Wno-unused-function -Wno-register -c -o $@ $<
 
 $(BUILD_DIR)/ast.o: $(AST_SRC) $(SRC_DIR)/ast.hpp
 	@mkdir -p $(BUILD_DIR)
