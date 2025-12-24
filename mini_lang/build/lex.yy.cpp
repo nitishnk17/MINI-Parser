@@ -1,5 +1,6 @@
+#line 1 "build/lex.yy.cpp"
 
-#line 2 "lex.yy.c"
+#line 3 "build/lex.yy.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -474,8 +475,11 @@ char *yytext;
 #line 4 "src/lexer.l"
 #include<cstdio>
 #include<cstdlib>
-#line 477 "lex.yy.c"
-#line 478 "lex.yy.c"
+#include<cstring>
+#include "ast.hpp"
+#include "parser.tab.hpp"
+#line 481 "build/lex.yy.cpp"
+#line 482 "build/lex.yy.cpp"
 
 #define INITIAL 0
 
@@ -535,8 +539,6 @@ extern int yywrap ( void );
 #endif
 
 #ifndef YY_NO_UNPUT
-    
-    static void yyunput ( int c, char *buf_ptr  );
     
 #endif
 
@@ -692,9 +694,10 @@ YY_DECL
 		}
 
 	{
-#line 8 "src/lexer.l"
+#line 11 "src/lexer.l"
 
-#line 697 "lex.yy.c"
+
+#line 700 "build/lex.yy.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -754,135 +757,138 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 9 "src/lexer.l"
+#line 13 "src/lexer.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 11 "src/lexer.l"
-{printf("TOKEN: VAR\n");}
+#line 15 "src/lexer.l"
+{ return VAR; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 12 "src/lexer.l"
-{printf("TOKEN: IF\n");}
+#line 16 "src/lexer.l"
+{ return IF; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 13 "src/lexer.l"
-{printf("TOKEN: ELSE\n");}
+#line 17 "src/lexer.l"
+{ return ELSE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 14 "src/lexer.l"
-{printf("TOKEN: WHILE\n");}
+#line 18 "src/lexer.l"
+{ return WHILE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "src/lexer.l"
-{printf("INTEGER(%s)\n",yytext);}
+#line 21 "src/lexer.l"
+{ yylval.ival = atoi(yytext); return INTEGER; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 18 "src/lexer.l"
-{printf("IDENTIFIER(%s)\n",yytext);}
+#line 23 "src/lexer.l"
+{ 
+                            yylval.sval = strdup(yytext);
+                            return IDENTIFIER;
+                    }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 20 "src/lexer.l"
-{printf("EQ\n");}
+#line 28 "src/lexer.l"
+{ return EQ; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 21 "src/lexer.l"
-{printf("NEQ\n");}
+#line 29 "src/lexer.l"
+{ return NEQ; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 22 "src/lexer.l"
-{printf("LE\n");}
+#line 30 "src/lexer.l"
+{ return LE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 23 "src/lexer.l"
-{printf("GE\n");}
+#line 31 "src/lexer.l"
+{ return GE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 24 "src/lexer.l"
-{printf("LT\n");}
+#line 32 "src/lexer.l"
+{ return LT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 25 "src/lexer.l"
-{printf("GT\n");}
+#line 33 "src/lexer.l"
+{ return GT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 27 "src/lexer.l"
-{printf("PLUS\n");}
+#line 35 "src/lexer.l"
+{ return PLUS; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 28 "src/lexer.l"
-{printf("MINUS\n");}
+#line 36 "src/lexer.l"
+{ return MINUS; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 29 "src/lexer.l"
-{printf("MUL\n");}
+#line 37 "src/lexer.l"
+{ return MUL; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 30 "src/lexer.l"
-{printf("DIV\n");}
+#line 38 "src/lexer.l"
+{ return DIV; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 32 "src/lexer.l"
-{printf("ASSIGN\n");}
+#line 40 "src/lexer.l"
+{ return ASSIGN; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 33 "src/lexer.l"
-{printf("SEMICOLON\n");}
+#line 41 "src/lexer.l"
+{ return SEMICOLON; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 34 "src/lexer.l"
-{printf("LPAREN\n");}
+#line 42 "src/lexer.l"
+{ return LPAREN; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 35 "src/lexer.l"
-{printf("RPAREN\n");}
+#line 43 "src/lexer.l"
+{ return RPAREN; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 36 "src/lexer.l"
-{printf("LBRACE\n");}
+#line 44 "src/lexer.l"
+{ return LBRACE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 37 "src/lexer.l"
-{printf("RBRACE\n");}
+#line 45 "src/lexer.l"
+{ return RBRACE; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 40 "src/lexer.l"
+#line 47 "src/lexer.l"
 ;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 42 "src/lexer.l"
-{printf("UNKNOWN(%s)\n",yytext);}
+#line 49 "src/lexer.l"
+{ printf("Unknown token: %s\n", yytext); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 45 "src/lexer.l"
+#line 51 "src/lexer.l"
 ECHO;
 	YY_BREAK
-#line 885 "lex.yy.c"
+#line 891 "build/lex.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1217,43 +1223,6 @@ static int yy_get_next_buffer (void)
 }
 
 #ifndef YY_NO_UNPUT
-
-    static void yyunput (int c, char * yy_bp )
-{
-	char *yy_cp;
-    
-    yy_cp = (yy_c_buf_p);
-
-	/* undo effects of setting up yytext */
-	*yy_cp = (yy_hold_char);
-
-	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-		{ /* need to shift things up to make room */
-		/* +2 for EOB chars. */
-		yy_size_t number_to_move = (yy_n_chars) + 2;
-		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		char *source =
-				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
-
-		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
-			*--dest = *--source;
-
-		yy_cp += (int) (dest - source);
-		yy_bp += (int) (dest - source);
-		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
-
-		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
-			YY_FATAL_ERROR( "flex scanner push-back overflow" );
-		}
-
-	*--yy_cp = (char) c;
-
-	(yytext_ptr) = yy_bp;
-	(yy_hold_char) = *yy_cp;
-	(yy_c_buf_p) = yy_cp;
-}
 
 #endif
 
@@ -1887,12 +1856,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 45 "src/lexer.l"
+#line 51 "src/lexer.l"
 
-
-
-int main() {
-    yylex();
-    return 0;
-}
 
