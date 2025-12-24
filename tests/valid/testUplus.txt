@@ -1,0 +1,17 @@
+var x = 10;
+var y = -5;      // Test Unary Minus
+var z = +20;     // Test Unary Plus (this will fail if you don't add the fix above)
+
+// Complex math with unary
+// Should be: 10 + (-(-5)) = 15
+var result = x + -y; 
+
+// Loop with negative condition
+var i = -3;
+var count = 0;
+while (i < 0) {
+    count = count + 1;
+    i = i + 1;
+}
+
+result; // Should be 15
