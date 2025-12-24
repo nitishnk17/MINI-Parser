@@ -235,22 +235,22 @@ void printSymbolTable(){
 
 // for indentation
 static void printIndent(int indent) {
-    for (int i = 0; i < indent; i++) {
-        std::cout << "  ";
+    for (int i = 0;i < indent;i++) {
+        std::cout<< "  ";
     }
 }
 
 // printing an expression tree
 void printExpr(Expr* expr, int indent) {
-    if (auto intExpr = dynamic_cast<IntExpr*>(expr)) {
+    if (auto intExpr= dynamic_cast<IntExpr*>(expr)) {
         printIndent(indent);
-        std::cout << "IntExpr(" << intExpr->value << ")\n";
+        std::cout<<"IntExpr("<<intExpr->value<<")\n";
         return;
     }
 
-    if (auto varExpr = dynamic_cast<VarExpr*>(expr)) {
+    if (auto varExpr=dynamic_cast<VarExpr*>(expr)) {
         printIndent(indent);
-        std::cout << "VarExpr(\"" << varExpr->name << "\")\n";
+        std::cout<< "VarExpr(\""<<varExpr->name <<"\")\n";
         return;
     }
 
@@ -271,69 +271,69 @@ void printExpr(Expr* expr, int indent) {
             case 'n': opName = "NEG"; break;
             default: opName = "UNKNOWN"; break;
         }
-        std::cout << "BinaryExpr(" << opName << ")\n";
-        printExpr(binExpr->left, indent + 1);
-        printExpr(binExpr->right, indent + 1);
+        std::cout<<"BinaryExpr("<<opName<<")\n";
+        printExpr(binExpr->left, indent+1);
+        printExpr(binExpr->right, indent+1);
         return;
     }
 }
 
 // print a statement tree
 void printStmt(Stmt* stmt, int indent) {
-    if (auto decl = dynamic_cast<VarDeclStmt*>(stmt)) {
+    if (auto decl=dynamic_cast<VarDeclStmt*>(stmt)) {
         printIndent(indent);
-        std::cout << "VarDeclStmt(\"" << decl->name << "\")\n";
+        std::cout<<"VarDeclStmt(\""<<decl->name<<"\")\n";
         return;
     }
 
-    if (auto declInit = dynamic_cast<VarDeclInitStmt*>(stmt)) {
+    if (auto declInit=dynamic_cast<VarDeclInitStmt*>(stmt)) {
         printIndent(indent);
-        std::cout << "VarDeclInitStmt(\"" << declInit->name << "\")\n";
-        printExpr(declInit->expr, indent + 1);
+        std::cout<<"VarDeclInitStmt(\""<<declInit->name<<"\")\n";
+        printExpr(declInit->expr, indent+1);
         return;
     }
 
-    if (auto assign = dynamic_cast<AssignStmt*>(stmt)) {
+    if (auto assign=dynamic_cast<AssignStmt*>(stmt)) {
         printIndent(indent);
-        std::cout << "AssignStmt(\"" << assign->name << "\")\n";
-        printExpr(assign->expr, indent + 1);
+        std::cout<<"AssignStmt(\""<<assign->name<<"\")\n";
+        printExpr(assign->expr, indent+1);
         return;
     }
 
-    if (auto ifStmt = dynamic_cast<IfStmt*>(stmt)) {
+    if (auto ifStmt=dynamic_cast<IfStmt*>(stmt)) {
         printIndent(indent);
-        std::cout << "IfStmt\n";
-        printIndent(indent + 1);
-        std::cout << "Condition:\n";
-        printExpr(ifStmt->condition, indent + 2);
-        printIndent(indent + 1);
-        std::cout << "Then:\n";
-        printStmt(ifStmt->thenStmt, indent + 2);
-        if (ifStmt->elseStmt) {
-            printIndent(indent + 1);
-            std::cout << "Else:\n";
-            printStmt(ifStmt->elseStmt, indent + 2);
+        std::cout<<"IfStmt\n";
+        printIndent(indent+1);
+        std::cout<<"Condition:\n";
+        printExpr(ifStmt->condition, indent+2);
+        printIndent(indent+1);
+        std::cout<<"Then:\n";
+        printStmt(ifStmt->thenStmt, indent+2);
+        if (ifStmt->elseStmt){
+            printIndent(indent+1);
+            std::cout<<"Else:\n";
+            printStmt(ifStmt->elseStmt, indent+2);
         }
         return;
     }
 
-    if (auto whileStmt = dynamic_cast<WhileStmt*>(stmt)) {
+    if (auto whileStmt=dynamic_cast<WhileStmt*>(stmt)) {
         printIndent(indent);
-        std::cout << "WhileStmt\n";
-        printIndent(indent + 1);
-        std::cout << "Condition:\n";
-        printExpr(whileStmt->condition, indent + 2);
-        printIndent(indent + 1);
-        std::cout << "Body:\n";
-        printStmt(whileStmt->body, indent + 2);
+        std::cout<<"WhileStmt\n";
+        printIndent(indent+1);
+        std::cout<<"Condition:\n";
+        printExpr(whileStmt->condition,indent+2);
+        printIndent(indent+1);
+        std::cout<<"Body:\n";
+        printStmt(whileStmt->body,indent+2);
         return;
     }
 
-    if (auto blockStmt = dynamic_cast<BlockStmt*>(stmt)) {
+    if (auto blockStmt=dynamic_cast<BlockStmt*>(stmt)) {
         printIndent(indent);
-        std::cout << "BlockStmt\n";
-        for (Stmt* s : blockStmt->statements) {
-            printStmt(s, indent + 1);
+        std::cout<<"BlockStmt\n";
+        for(Stmt* s : blockStmt->statements) {
+            printStmt(s,indent+1);
         }
         return;
     }
